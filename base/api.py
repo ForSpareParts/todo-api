@@ -12,3 +12,4 @@ class UserViewSet(ModelViewSet):
 class ToDoViewSet(ModelViewSet):
     serializer_class = serializers.ToDoSerializer
     queryset = models.ToDo.objects.all()
+    filter_fields = ('completed_on', 'user')
