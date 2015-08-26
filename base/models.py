@@ -11,3 +11,4 @@ class ToDo(models.Model):
     title = models.CharField(max_length=255)
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     completed_on = models.DateTimeField(auto_now=False, blank=True, null=True)
+    due_date = models.DateTimeField(auto_now=False, blank=True, null=True)

@@ -25,5 +25,3 @@ class ToDoViewSet(ModelViewSet):
     serializer_class = serializers.ToDoSerializer
     queryset = models.ToDo.objects.all()
     filter_fields = ('user',)
-
-

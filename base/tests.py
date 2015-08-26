@@ -36,7 +36,9 @@ class ToDoApiTests(APITestCase):
             title='Do yet more stuff',
             user=self.jane,
             completed_on=central.localize(
-                datetime.datetime(2015, 8, 2, 12, 0, 0)))
+                datetime.datetime(2015, 8, 2, 12, 0, 0)),
+            due_date=central.localize(
+                datetime.datetime(2016, 8, 2, 12, 0, 0)))
 
 
     def test_get_users(self):
@@ -104,22 +106,31 @@ class ToDoApiTests(APITestCase):
     def test_create_todo(self):
         '''Test that we can create a new todo item.'''
 
+        due_date = central.localize(
+                datetime.datetime(2015, 8, 2, 12, 0, 0))
+
         url = reverse('todo-list')
+
+        data = {
+            'title': 'Posted todo',
+            'user': 1,
+            'due_date': due_date.isoformat()
+        }
 
         response = self.client.post(
             url,
-            {'title': 'Posted todo', 'user': 1},
+            data,
             format='json')
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data['id'], 4)
 
-        self.assertEqual(ToDo.objects.get(pk=4).title, 'Posted todo')
+        self.assertEqual(ToDo.objects.get(pk=4).due_date, due_date)
 
 
     def test_complete_todo(self):
         '''Test that we can mark an incomplete todo item as completed.'''
 
-        some_datetime = central.localize(
+        completed_on = central.localize(
                 datetime.datetime(2015, 8, 2, 12, 0, 0))
 
         self.assertEqual(ToDo.objects.get(pk=2).completed_on, None)
@@ -129,7 +140,7 @@ class ToDoApiTests(APITestCase):
         data = {
             'title': 'Do more stuff',
             'user': 1,
-            'completed_on': some_datetime.isoformat()
+            'completed_on': completed_on.isoformat()
         }
 
         response = self.client.put(
@@ -138,4 +149,4 @@ class ToDoApiTests(APITestCase):
             format='json')
         self.assertEqual(response.status_code, 200)
 
-        self.assertEqual(ToDo.objects.get(pk=2).completed_on, some_datetime)
+        self.assertEqual(ToDo.objects.get(pk=2).completed_on, completed_on)
