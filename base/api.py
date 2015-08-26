@@ -4,6 +4,8 @@ from rest_framework.viewsets import ModelViewSet
 from base import models, serializers
 
 TRUTHY_VALUES = ['1', 'true', 'True']
+FALSY_VALUES = ['0', 'false', 'False']
+
 
 class UserViewSet(ModelViewSet):
     serializer_class = serializers.UserSerializer
@@ -15,8 +17,12 @@ class ToDoViewSet(ModelViewSet):
     def filter_queryset(self, queryset):
 
         # process the is_completed filter
-        if self.request.GET.get('is_completed', None) in TRUTHY_VALUES:
+        is_completed = self.request.GET.get('is_completed', None)
+
+        if is_completed in TRUTHY_VALUES:
             queryset = queryset.exclude(completed_on=None)
+        elif is_completed in FALSY_VALUES:
+            queryset = queryset.filter(completed_on=None)
 
 
         # hand off the queryset to the normal filtering system

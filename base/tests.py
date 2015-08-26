@@ -88,6 +88,14 @@ class ToDoApiTests(APITestCase):
         self.assertEqual(response.data[1]['title'], 'Do yet more stuff')
 
 
+        # All incomplete todos
+        response = self.client.get(url+'?is_completed=false', format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['title'], 'Do more stuff')
+
+
+
     def test_create_user(self):
         '''Test that we can create a new user.'''
 
